@@ -1,0 +1,452 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050b18">
+<title>LIXERA BOT</title>
+
+<style>
+:root {
+  --bg:#050b18;
+  --panel:#0c2540;
+  --blue:#08c8ff;
+  --blue2:#0878e8;
+  --white:#f5faff;
+  --muted:#a9c5df;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  color:var(--white);
+  font-family:Arial,sans-serif;
+  background:radial-gradient(ellipse at top,#10476b,var(--bg) 70%);
+}
+button,input {font:inherit}
+button {cursor:pointer}
+header {
+  position:sticky;top:8px;z-index:5;
+  margin:12px;
+  padding:15px;
+  border:1px solid #396482;
+  border-radius:22px;
+  background:#102c48ed;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand {display:flex;align-items:center;gap:10px;font-size:23px;font-weight:900}
+.logo {
+  display:grid;place-items:center;
+  width:45px;height:45px;border-radius:14px;
+  background:linear-gradient(135deg,#4be5ff,#0864d5);
+  color:#031629;font-size:27px;
+}
+.menu {font-size:28px;color:var(--blue)}
+main {width:min(100% - 24px,900px);margin:auto}
+.hero {
+  min-height:350px;
+  padding:30px 22px;
+  display:flex;align-items:end;
+  border:1px solid #327ba0;
+  border-radius:25px;
+  overflow:hidden;
+  background:
+    linear-gradient(0deg,#03152bf2 0%,#03152b88 48%,transparent 100%),
+    url("assets/lixera-hero.jpg") center 35%/cover no-repeat;
+}
+.hero-content {max-width:500px}
+.tag {color:var(--blue);font-size:11px;letter-spacing:3px;font-weight:bold}
+h1 {font-size:42px;line-height:1.05;margin:12px 0}
+.hero p {color:#d3e6f7;line-height:1.6}
+.btn {
+  border:0;border-radius:13px;
+  padding:13px 17px;font-weight:bold;
+}
+.primary {background:linear-gradient(110deg,var(--blue),var(--blue2));color:#001527}
+.secondary {background:#163d5c;color:white;border:1px solid #376486}
+.tabs {display:flex;gap:9px;overflow-x:auto;padding:20px 0}
+.tab {
+  flex-shrink:0;padding:13px 19px;border-radius:30px;
+  border:1px solid #376486;background:#123653;color:white;
+}
+.tab.active {background:var(--blue);color:#031a2b;border-color:var(--blue)}
+h2 {font-size:26px;margin:10px 0}
+.muted {color:var(--muted);line-height:1.6}
+.products {display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+.card {
+  padding:17px;border-radius:21px;
+  border:1px solid #2e5d7b;
+  background:linear-gradient(155deg,#154568,#0b2036);
+}
+.art {
+  height:125px;display:grid;place-items:center;
+  border-radius:15px;
+  background:radial-gradient(circle,#12699a,#06172a);
+  color:#57ddff;font-size:55px;
+}
+.card h3 {margin:15px 0 8px}
+.card p {font-size:14px;color:var(--muted);line-height:1.6}
+.price {font-size:25px;font-weight:bold;color:var(--blue);margin:15px 0}
+.qty {display:flex;justify-content:center;align-items:center;gap:12px;margin:15px 0}
+.qty button {border:0;border-radius:12px;width:44px;height:44px;background:var(--blue);font-size:23px}
+.qty input {
+  width:90px;text-align:center;border:0;border-radius:12px;
+  padding:12px;background:white;color:#061322;font-weight:bold;
+}
+.full {width:100%}
+.hidden {display:none!important}
+footer {text-align:center;color:var(--muted);padding:35px 10px 110px;font-size:13px}
+.dock {
+  position:fixed;bottom:0;left:0;right:0;z-index:6;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 16px calc(13px + env(safe-area-inset-bottom));
+  background:#04182bf2;border-top:1px solid #285373;
+}
+.dock small {display:block;color:var(--blue);margin-top:5px}
+.modal-bg {
+  position:fixed;inset:0;z-index:10;background:#000c;
+  display:none;align-items:center;justify-content:center;padding:14px;
+}
+.modal-bg.show {display:flex}
+.modal {
+  width:min(480px,100%);max-height:90vh;overflow:auto;
+  padding:20px;border-radius:23px;background:#0b2944;
+  border:1px solid #397293;
+}
+.modal-head {display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-head h2 {font-size:22px}
+.close {border:0;background:none;color:white;font-size:27px}
+.field {display:block;margin:15px 0 7px;color:#cce4f7;font-size:14px}
+.input {
+  width:100%;padding:12px;border-radius:11px;
+  border:1px solid #396580;background:#071b2e;color:white;
+}
+.payment {
+  display:flex;align-items:center;gap:12px;
+  padding:13px;margin-top:10px;border-radius:14px;
+  background:#102f4b;border:1px solid #2d5978;
+}
+.payment input {accent-color:var(--blue)}
+.paylogo {width:55px;height:36px;object-fit:contain;background:white;border-radius:7px;padding:4px}
+.payname {font-weight:bold}
+.paydesc {font-size:12px;color:var(--muted);margin-top:4px}
+.qris {width:100%;max-width:260px;display:block;margin:15px auto;border-radius:10px;background:white}
+.notice {font-size:12px;line-height:1.6;color:var(--muted)}
+@media(min-width:650px) {
+  .hero {min-height:410px;padding:38px}
+  h1 {font-size:57px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="brand"><div class="logo">L</div>LIXERA BOT</div>
+  <div class="menu" onclick="document.querySelector('#catalog').scrollIntoView({behavior:'smooth'})">☰</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="tag">NEXT GENERATION BOT SERVICE</div>
+      <h1>WELCOME TO<br>LIXERA BOT</h1>
+      <p>Sewa bot WhatsApp, user premium, dan paket reseller owner bot dalam satu tempat.</p>
+      <button class="btn primary" onclick="document.querySelector('#catalog').scrollIntoView({behavior:'smooth'})">Jelajahi Produk ↓</button>
+    </div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('sewa',this)">Sewa Bot WA</button>
+    <button class="tab" onclick="showTab('premium',this)">User Premium WA</button>
+    <button class="tab" onclick="showTab('owner',this)">Owner Bot</button>
+  </div>
+
+  <section id="catalog">
+    <h2 id="heading">Sewa Bot WA</h2>
+    <p class="muted" id="subheading">Pilih durasi yang kamu butuhkan.</p>
+
+    <div class="products" id="sewaPanel">
+      <article class="card">
+        <div class="art">◈</div>
+        <h3>Sewa Bot WhatsApp</h3>
+        <p>Pilih masa sewa bot sesuai kebutuhan kamu.</p>
+        <label class="field" for="sewaDays">Durasi (hari)</label>
+        <div class="qty">
+          <button onclick="changeDays('sewaDays',-1)">−</button>
+          <input id="sewaDays" type="number" min="1" max="365" value="30" onchange="updatePrices()">
+          <button onclick="changeDays('sewaDays',1)">+</button>
+        </div>
+        <div class="price" id="sewaPrice">Rp21.000</div>
+        <button class="btn primary full" onclick="addCart('sewa')">Tambah ke keranjang</button>
+      </article>
+    </div>
+
+    <div class="products hidden" id="premiumPanel">
+      <article class="card">
+        <div class="art">✦</div>
+        <h3>User Premium WA</h3>
+        <p>Pilih durasi akses premium sesuai paket yang tersedia.</p>
+        <label class="field" for="premiumDays">Durasi (hari)</label>
+        <div class="qty">
+          <button onclick="changeDays('premiumDays',-1)">−</button>
+          <input id="premiumDays" type="number" min="1" max="365" value="1" onchange="updatePrices()">
+          <button onclick="changeDays('premiumDays',1)">+</button>
+        </div>
+        <div class="price" id="premiumPrice">Rp500</div>
+        <button class="btn primary full" onclick="addCart('premium')">Tambah ke keranjang</button>
+      </article>
+    </div>
+
+    <div class="products hidden" id="ownerPanel">
+      <article class="card">
+        <div class="art">♛</div>
+        <h3>Reseller Owner Bot</h3>
+        <p>Paket akses owner/reseller untuk pelanggan yang ingin menjual layanan bot lagi.</p>
+        <label class="field" for="ownerDays">Durasi paket (hari)</label>
+        <div class="qty">
+          <button onclick="changeDays('ownerDays',-1)">−</button>
+          <input id="ownerDays" type="number" min="1" max="365" value="30" onchange="updatePrices()">
+          <button onclick="changeDays('ownerDays',1)">+</button>
+        </div>
+        <div class="price" id="ownerPrice">Rp60.000</div>
+        <button class="btn primary full" onclick="addCart('owner')">Tambah ke keranjang</button>
+      </article>
+    </div>
+  </section>
+
+  <p class="notice">Harga di versi contoh ini bisa kamu ganti di bagian JavaScript. Pastikan detail fitur dan hak akses produk sesuai dengan layanan yang benar-benar kamu sediakan.</p>
+</main>
+
+<footer>© <span id="year"></span> LIXERA BOT • Digital Service</footer>
+
+<div class="dock">
+  <div><strong id="cartName">Keranjang kosong</strong><small id="cartTotal">Total: Rp0</small></div>
+  <button class="btn primary" onclick="checkout()">Order / Bayar</button>
+</div>
+
+<div class="modal-bg" id="checkoutModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Checkout LIXERA BOT</h2>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+
+    <p class="muted" id="orderSummary">Keranjang masih kosong.</p>
+    <div class="price" id="checkoutTotal">Rp0</div>
+
+    <label class="field" for="buyerName">Nama pembeli</label>
+    <input class="input" id="buyerName" placeholder="Nama kamu">
+
+    <label class="field" for="buyerNumber">Nomor WhatsApp pembeli</label>
+    <input class="input" id="buyerNumber" placeholder="08xxxxxxxxxx" inputmode="tel">
+
+    <label class="field">Pilih metode pembayaran</label>
+
+    <label class="payment">
+      <input type="radio" name="payment" value="QRIS" checked onchange="selectPayment()">
+      <img class="paylogo" src="assets/qris-lixera.jpg" alt="QRIS">
+      <div><div class="payname">QRIS</div><div class="paydesc">Scan QRIS LIXERA STORE</div></div>
+    </label>
+
+    <label class="payment">
+      <input type="radio" name="payment" value="DANA" onchange="selectPayment()">
+      <img class="paylogo" src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" alt="DANA">
+      <div><div class="payname">DANA</div><div class="paydesc">083165700636</div></div>
+    </label>
+
+    <label class="payment">
+      <input type="radio" name="payment" value="GoPay" onchange="selectPayment()">
+      <img class="paylogo" src="https://upload.wikimedia.org/wikipedia/commons/8/86/Gopay_logo.svg" alt="GoPay">
+      <div><div class="payname">GoPay</div><div class="paydesc">083165700636</div></div>
+    </label>
+
+    <div id="paymentInfo" class="notice" style="margin-top:13px">Silakan scan QRIS di bawah ini.</div>
+    <img class="qris" id="qrisImage" src="assets/qris-lixera.jpg" alt="QRIS LIXERA STORE">
+
+    <button class="btn primary full" onclick="confirmOrder()">Saya Sudah Bayar — Konfirmasi WhatsApp</button>
+    <p class="notice">Simpan bukti pembayaran sebelum menghubungi admin. Pesanan belum otomatis terverifikasi hanya karena tombol ini ditekan.</p>
+  </div>
+</div>
+
+<script>
+/* GANTI NOMOR ADMIN INI DENGAN NOMOR WHATSAPP ADMIN LIXERA.
+   Format internasional tanpa tanda +, contoh: 62812xxxxxxx. */
+const ADMIN_WA = "628XXXXXXXXXX";
+
+/* TARIF CONTOH — ubah sesuai harga asli produk. */
+const prices = {
+  sewa: 700,       // Rp per hari
+  premium: 500,    // Rp per hari
+  owner: 2000      // Rp per hari
+};
+
+const labels = {
+  sewa: "Sewa Bot WA",
+  premium: "User Premium WA",
+  owner: "Reseller Owner Bot"
+};
+
+let cart = [];
+
+function rupiah(n) {
+  return new Intl.NumberFormat("id-ID", {
+    style:"currency", currency:"IDR", maximumFractionDigits:0
+  }).format(n);
+}
+
+function validDays(id) {
+  const input = document.getElementById(id);
+  let n = parseInt(input.value || "1", 10);
+  if (!Number.isFinite(n)) n = 1;
+  n = Math.max(1, Math.min(365, n));
+  input.value = n;
+  return n;
+}
+
+function changeDays(id, delta) {
+  const input = document.getElementById(id);
+  input.value = (parseInt(input.value, 10) || 1) + delta;
+  validDays(id);
+  updatePrices();
+}
+
+function updatePrices() {
+  document.getElementById("sewaPrice").textContent =
+    rupiah(validDays("sewaDays") * prices.sewa);
+  document.getElementById("premiumPrice").textContent =
+    rupiah(validDays("premiumDays") * prices.premium);
+  document.getElementById("ownerPrice").textContent =
+    rupiah(validDays("ownerDays") * prices.owner);
+}
+
+function showTab(type, button) {
+  ["sewa", "premium", "owner"].forEach(id => {
+    document.getElementById(id + "Panel").classList.toggle("hidden", id !== type);
+  });
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+  button.classList.add("active");
+
+  const titles = {
+    sewa: "Sewa Bot WA",
+    premium: "User Premium WA",
+    owner: "Reseller Owner Bot"
+  };
+  document.getElementById("heading").textContent = titles[type];
+  document.getElementById("subheading").textContent =
+    type === "owner"
+      ? "Pilih durasi paket reseller owner bot."
+      : "Pilih durasi dan tambahkan produk ke keranjang.";
+}
+
+function addCart(type) {
+  const inputId = {
+    sewa: "sewaDays",
+    premium: "premiumDays",
+    owner: "ownerDays"
+  }[type];
+
+  const days = validDays(inputId);
+  cart = cart.filter(item => item.type !== type);
+  cart.push({type, days, price: days * prices[type]});
+  renderCart();
+  checkout();
+}
+
+function renderCart() {
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById("cartName").textContent =
+    cart.length ? cart.map(item => labels[item.type]).join(" + ") : "Keranjang kosong";
+  document.getElementById("cartTotal").textContent =
+    "Total: " + rupiah(total);
+}
+
+function checkout() {
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  document.getElementById("orderSummary").innerHTML = cart.length
+    ? cart.map(item =>
+        `${labels[item.type]} — ${item.days} hari: ${rupiah(item.price)}`
+      ).join("<br>")
+    : "Keranjang masih kosong. Pilih produk terlebih dahulu.";
+
+  document.getElementById("checkoutTotal").textContent = rupiah(total);
+  document.getElementById("checkoutModal").classList.add("show");
+  selectPayment();
+}
+
+function closeModal() {
+  document.getElementById("checkoutModal").classList.remove("show");
+}
+
+function selectPayment() {
+  const method = document.querySelector('input[name="payment"]:checked').value;
+  const info = document.getElementById("paymentInfo");
+  const qris = document.getElementById("qrisImage");
+
+  if (method === "QRIS") {
+    info.textContent = "Scan QRIS LIXERA STORE. Pastikan nominal pembayaran sesuai total pesanan.";
+    qris.classList.remove("hidden");
+  } else {
+    info.textContent = "Kirim pembayaran ke nomor " + method + " 083165700636. Pastikan nama penerima dan nominal benar sebelum membayar.";
+    qris.classList.add("hidden");
+  }
+}
+
+function confirmOrder() {
+  if (!cart.length) {
+    alert("Keranjang masih kosong. Tambahkan produk dahulu.");
+    return;
+  }
+
+  const name = document.getElementById("buyerName").value.trim();
+  const buyerNumber = document.getElementById("buyerNumber").value.trim();
+
+  if (!name || !buyerNumber) {
+    alert("Isi nama dan nomor WhatsApp kamu dahulu.");
+    return;
+  }
+
+  if (ADMIN_WA.includes("X")) {
+    alert("Nomor WhatsApp admin belum diatur. Ganti ADMIN_WA di kode website.");
+    return;
+  }
+
+  const method = document.querySelector('input[name="payment"]:checked').value;
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const now = new Date();
+  const jam = now.toLocaleString("id-ID", {
+    timeZone:"Asia/Jakarta",
+    dateStyle:"short",
+    timeStyle:"medium"
+  });
+
+  const detail = cart.map(item =>
+    `${labels[item.type]} (${item.days} hari) — ${rupiah(item.price)}`
+  ).join("\n");
+
+  const message =
+`Halo min, tolong konfirmasi pembayaran LIXERA BOT.
+
+Nama: ${name}
+Nomor WhatsApp: ${buyerNumber}
+Tanggal & jam order: ${jam}
+
+Pesanan:
+${detail}
+
+Metode pembayaran: ${method}
+Total harga: ${rupiah(total)}
+
+Saya sudah melakukan pembayaran. Saya akan mengirim bukti pembayaran untuk dicek. Terima kasih, min.`;
+
+  window.open(
+    "https://wa.me/" + ADMIN_WA + "?text=" + encodeURIComponent(message),
+    "_blank"
+  );
+}
+
+document.getElementById("year").textContent = new Date().getFullYear();
+updatePrices();
+</script>
+</body>
+  </html>
+                                                        
